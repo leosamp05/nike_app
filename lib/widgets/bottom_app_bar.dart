@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fui_kit/fui_kit.dart';
-// import 'package:nike_app/main.dart';
-// import 'package:nike_app/pages/inbox.dart';
-// import 'package:nike_app/pages/profile.dart';
-// import 'package:nike_app/pages/wishlist.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int selectedIndex;

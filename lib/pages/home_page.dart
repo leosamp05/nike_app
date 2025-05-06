@@ -9,6 +9,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Vettore dei Prodotti
     final List<Product> products = [
       Product(
         name: 'Air Max 97',
@@ -39,11 +40,16 @@ class HomePage extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 90),
           children: [
             const SizedBox(height: 25),
+
             const HeroWidget(),
+
             const SizedBox(height: 14),
+
             const CategoryBar(),
+
             const SizedBox(height: 23),
 
+            // Product List
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: GridView.builder(

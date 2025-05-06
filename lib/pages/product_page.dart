@@ -22,9 +22,10 @@ class _ProductPageState extends State<ProductPage> {
   String selectedSize = 'UK 7';
   Color selectedColor = Colors.red;
 
-  final List<String> sizes = ['UK 6', 'UK 7', 'UK 8', 'UK 9'];
-  final List<Color> colors = [Colors.red, Colors.blue];
+  final List<String> sizes = ['UK 6', 'UK 7', 'UK 8', 'UK 9']; // Vettore Taglie
+  final List<Color> colors = [Colors.red, Colors.blue]; // Vettore Colori scarpe
 
+  // logica per trascinare la scarpa e aumentare l'opacità della scatola
   void handleDrag(DragUpdateDetails details) {
     final dy = details.delta.dy;
     if (dy > 0) {
@@ -35,6 +36,7 @@ class _ProductPageState extends State<ProductPage> {
     }
   }
 
+  // Per 'aggiungere' il prodotto al carrello e mostrare lo snackbar con un alert
   void handleRelease(DragEndDetails details) {
     if (shoeY >= targetY) {
       CartService.instance.add(widget.product);
@@ -42,6 +44,7 @@ class _ProductPageState extends State<ProductPage> {
         context,
       ).showSnackBar(const SnackBar(content: Text('Aggiunto al carrello!')));
     }
+
     // reset di posizione e opacità
     setState(() {
       shoeY = 0;
@@ -57,6 +60,7 @@ class _ProductPageState extends State<ProductPage> {
   Widget build(BuildContext context) {
     final cartCount = CartService.instance.count;
 
+    // Scarpa
     Widget _shoeWidget() {
       return Transform.rotate(
         angle: -0.3,
@@ -79,6 +83,8 @@ class _ProductPageState extends State<ProductPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+
+        // Back Arrow
         leading: Padding(
           padding: const EdgeInsets.only(left: 16, bottom: 7, top: 7),
           child: InkWell(
@@ -97,6 +103,17 @@ class _ProductPageState extends State<ProductPage> {
           ),
         ),
 
+        // Titolo del Prodotto
+        title: Text(
+          widget.product.name,
+          style: const TextStyle(
+            color: Colors.black,
+            fontFamily: 'Work Sans',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        // Cart Button
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
@@ -171,7 +188,7 @@ class _ProductPageState extends State<ProductPage> {
             ),
           ),
 
-          // Dettagli prezzo/taglie/colore
+          // Dettagli prezzo - taglie - colore
           Positioned(
             top: 16,
             left: 0,
@@ -346,6 +363,7 @@ class _ProductPageState extends State<ProductPage> {
             ),
           ),
 
+          // Box Scarpe
           Align(
             alignment: Alignment.bottomCenter,
             child: DragTarget<Product>(
@@ -444,6 +462,7 @@ class _ProductPageState extends State<ProductPage> {
             ),
           ),
 
+          // Scarpa
           Positioned(
             top: 150 + shoeY,
             left: (MediaQuery.of(context).size.width - 270) / 2,

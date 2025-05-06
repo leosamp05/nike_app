@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fui_kit/maps/regular_rounded.dart';
-import 'package:fui_kit/widgets/icons/icon_widget.dart';
-// import 'package:nike_app/main.dart';
 import 'package:nike_app/widgets/drawer_custom.dart';
 import 'package:nike_app/widgets/header.dart';
 
@@ -27,7 +24,6 @@ class _CartPageState extends State<CartPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FUI(RegularRounded.SAD, height: 150, color: Colors.black87),
           Text(
             'Your cart is empty',
             textAlign: TextAlign.center,

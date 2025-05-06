@@ -44,7 +44,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int selectedIndex = 0;
 
-  final List<Widget> pages = [HomePage(), Wishlist(), Inbox(), Profile()];
+  final List<Widget> pages = [
+    HomePage(),
+    Wishlist(),
+    Inbox(),
+    Profile(),
+  ]; // Vettore delle pagine
 
   @override
   Widget build(BuildContext context) {

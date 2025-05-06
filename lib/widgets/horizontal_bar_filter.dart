@@ -8,6 +8,7 @@ class CategoryBar extends StatefulWidget {
 }
 
 class _CategoryBarState extends State<CategoryBar> {
+  // Vettore Categorie
   final List<String> categories = [
     'All',
     'Running',
