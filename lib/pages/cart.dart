@@ -13,7 +13,6 @@ class _CartPageState extends State<CartPage> {
   @override
   void initState() {
     super.initState();
-    // Ogni volta che cambia il carrello, chiamiamo setState per rifare il build
     CartService.instance.addListener(_onCartChanged);
   }
 
@@ -152,11 +151,11 @@ class _CartPageState extends State<CartPage> {
                                 () => CartService.instance.remove(product),
                             icon: const FUI(
                               RegularRounded.TRASH,
-                              color: Colors.black87,
+                              color: Colors.red,
                               height: 20,
                             ),
                             style: IconButton.styleFrom(
-                              backgroundColor: Colors.grey.shade100,
+                              backgroundColor: Colors.red.shade100,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),

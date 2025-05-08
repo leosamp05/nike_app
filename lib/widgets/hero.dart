@@ -45,7 +45,7 @@ class _HeroWidgetState extends State<HeroWidget> {
       gradientColors: const [Color(0xFF3A6EA5), Color(0xFF84B6F4)],
     ),
 
-    // aggiungi qui altre slide…
+    // Aggiungere altre slide qui
   ];
 
   @override
@@ -171,7 +171,7 @@ class _HeroWidgetState extends State<HeroWidget> {
 
         const SizedBox(height: 12),
 
-        // Indicatori puntini
+        // Indicatore slide (puntini)
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(_slides.length, (idx) {

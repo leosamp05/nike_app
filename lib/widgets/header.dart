@@ -3,8 +3,6 @@ import 'package:fui_kit/fui_kit.dart';
 import 'package:nike_app/models/cart_service.dart';
 import 'package:nike_app/pages/cart.dart';
 
-/// Un AppBar personalizzato che ascolta CartService.instance
-/// e mostra il badge aggiornato automaticamente.
 class Header extends StatelessWidget implements PreferredSizeWidget {
   const Header({super.key});
 

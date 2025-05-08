@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fui_kit/fui_kit.dart';
+import 'package:nike_app/models/whishlist_service.dart';
 import 'package:simple_shadow/simple_shadow.dart';
 import 'package:nike_app/models/product.dart';
 import 'package:nike_app/models/cart_service.dart';
@@ -24,6 +25,7 @@ class _ProductPageState extends State<ProductPage> {
 
   // Vettore Taglie
   final List<String> sizes = ['UK 6', 'UK 7', 'UK 8', 'UK 9'];
+
   // Vettore Colori scarpe
   final List<Color> colors = [Colors.red, Colors.blue];
 
@@ -37,7 +39,7 @@ class _ProductPageState extends State<ProductPage> {
     });
   }
 
-  // Per 'aggiungere' il prodotto al carrello e mostrare lo snackbar con un alert
+  // Per aggiungere il prodotto al carrello e mostrare lo snackbar con un alert
   void handleRelease(DragEndDetails details) {
     if (shoeOffset.dy >= targetY) addToCart();
     // reset posizione e opacità
@@ -56,6 +58,7 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isSaved = WishlistService.instance.items.contains(widget.product);
     final cartCount = CartService.instance.count;
     final originX = (MediaQuery.of(context).size.width - 270) / 2;
     const originY = 150.0;
@@ -113,6 +116,7 @@ class _ProductPageState extends State<ProductPage> {
           ),
         ),
         centerTitle: true,
+
         // Cart Button
         actions: [
           Padding(
@@ -372,18 +376,37 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                     const SizedBox(height: 8),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        if (isSaved) {
+                          WishlistService.instance.remove(widget.product);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Rimosso dalla wishlist!'),
+                            ),
+                          );
+                        } else {
+                          WishlistService.instance.add(widget.product);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Aggiunto alla wishlist!'),
+                            ),
+                          );
+                        }
+                        setState(() {});
+                      },
                       borderRadius: BorderRadius.circular(12),
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.black12),
+                          color: isSaved ? Colors.black : Colors.white,
+                          border: Border.all(
+                            color: isSaved ? Colors.black : Colors.black12,
+                          ),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: FUI(
                           RegularRounded.BOOKMARK,
-                          color: Colors.black,
+                          color: isSaved ? Colors.white : Colors.black,
                           height: 22,
                         ),
                       ),

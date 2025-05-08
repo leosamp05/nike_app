@@ -76,7 +76,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // filtro
     final filtered =
         (selectedCategoryIndex == 0)
             ? allProducts
@@ -88,12 +87,11 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
-          // Hero in testa
           SliverToBoxAdapter(child: const SizedBox(height: 25)),
           SliverToBoxAdapter(child: const HeroWidget()),
           SliverToBoxAdapter(child: const SizedBox(height: 14)),
 
-          // Barre dei filtri, sticky
+          // Barra dei filtri sticky
           SliverPersistentHeader(
             pinned: true,
             delegate: _StickyFilterBarDelegate(
@@ -106,7 +104,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          // Spazio dopo sticky bar
           SliverToBoxAdapter(child: const SizedBox(height: 23)),
 
           // Griglia prodotti
@@ -126,7 +123,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          // margine inferiore per bottom bar
           SliverToBoxAdapter(child: const SizedBox(height: 90)),
         ],
       ),
@@ -134,7 +130,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-/// Delegate che tiene la CategoryBar “pinned” in cima
+// Delegate che tiene la CategoryBar pinnata in cima
 class _StickyFilterBarDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
   final double height;
@@ -147,7 +143,6 @@ class _StickyFilterBarDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    // puoi aggiungere ombra quando sticky:
     return Container(color: Colors.white, child: child);
   }
 

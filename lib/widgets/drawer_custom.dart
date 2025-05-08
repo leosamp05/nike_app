@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fui_kit/maps/regular_rounded.dart';
 import 'package:fui_kit/widgets/icons/icon_widget.dart';
+import 'package:nike_app/models/user_service.dart';
 
 class DrawerCustom extends StatelessWidget {
   final int selectedIndex;
@@ -21,11 +22,26 @@ class DrawerCustom extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(color: Colors.black),
-              child: Image.asset(
-                'assets/images/nike-logo-white.png',
-                height: 50,
-                width: 50,
+              decoration: BoxDecoration(color: Colors.black87),
+              child: RichText(
+                text: TextSpan(
+                  text: 'Ciao,\n',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: UserService.instance.userName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        fontSize: 40,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             ListTile(

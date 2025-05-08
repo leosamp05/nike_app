@@ -1,4 +1,3 @@
-// lib/widgets/category_bar.dart
 import 'package:flutter/material.dart';
 
 class CategoryBar extends StatelessWidget {

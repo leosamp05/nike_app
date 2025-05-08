@@ -14,7 +14,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -44,12 +43,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int selectedIndex = 0;
 
-  final List<Widget> pages = [
-    HomePage(),
-    Wishlist(),
-    Inbox(),
-    Profile(),
-  ]; // Vettore delle pagine
+  // Vettore delle pagine
+  final List<Widget> pages = [HomePage(), Wishlist(), Inbox(), Profile()];
 
   @override
   Widget build(BuildContext context) {
