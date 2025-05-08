@@ -15,50 +15,50 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  double shoeY = 0;
+  Offset shoeOffset = Offset.zero;
   double boxOpacity = 0.3;
   final double targetY = 350;
 
   String selectedSize = 'UK 7';
   Color selectedColor = Colors.red;
 
-  final List<String> sizes = ['UK 6', 'UK 7', 'UK 8', 'UK 9']; // Vettore Taglie
-  final List<Color> colors = [Colors.red, Colors.blue]; // Vettore Colori scarpe
+  // Vettore Taglie
+  final List<String> sizes = ['UK 6', 'UK 7', 'UK 8', 'UK 9'];
+  // Vettore Colori scarpe
+  final List<Color> colors = [Colors.red, Colors.blue];
 
   // logica per trascinare la scarpa e aumentare l'opacità della scatola
   void handleDrag(DragUpdateDetails details) {
-    final dy = details.delta.dy;
-    if (dy > 0) {
-      setState(() {
-        shoeY = (shoeY + dy).clamp(0.0, targetY);
-        boxOpacity = (shoeY / targetY).clamp(0.3, 1.0);
-      });
-    }
+    setState(() {
+      // sommiamo delta sia in x che in y
+      shoeOffset += details.delta;
+      // manteniamo l’opacità della box in base allo spostamento verticale
+      boxOpacity = (shoeOffset.dy / targetY).clamp(0.3, 1.0);
+    });
   }
 
   // Per 'aggiungere' il prodotto al carrello e mostrare lo snackbar con un alert
   void handleRelease(DragEndDetails details) {
-    if (shoeY >= targetY) {
-      CartService.instance.add(widget.product);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Aggiunto al carrello!')));
-    }
-
-    // reset di posizione e opacità
+    if (shoeOffset.dy >= targetY) addToCart();
+    // reset posizione e opacità
     setState(() {
-      shoeY = 0;
+      shoeOffset = Offset.zero;
       boxOpacity = 0.3;
     });
   }
 
-  void resetBoxOpacity() {
-    setState(() => boxOpacity = 0.3);
+  void addToCart() {
+    CartService.instance.add(widget.product);
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Aggiunto al carrello!')));
   }
 
   @override
   Widget build(BuildContext context) {
     final cartCount = CartService.instance.count;
+    final originX = (MediaQuery.of(context).size.width - 270) / 2;
+    const originY = 150.0;
 
     // Scarpa
     Widget _shoeWidget() {
@@ -170,7 +170,6 @@ class _ProductPageState extends State<ProductPage> {
       body: Stack(
         alignment: Alignment.center,
         children: [
-          // Sfondo NIKE
           Positioned(
             top: 90,
             child: RotatedBox(
@@ -188,7 +187,6 @@ class _ProductPageState extends State<ProductPage> {
             ),
           ),
 
-          // Dettagli prezzo - taglie - colore
           Positioned(
             top: 16,
             left: 0,
@@ -225,172 +223,20 @@ class _ProductPageState extends State<ProductPage> {
                       fontFamily: 'Work Sans',
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            'Size',
-                            style: TextStyle(
-                              fontFamily: 'Work Sans',
-                              fontWeight: FontWeight.w700,
-                            ),
-                            textAlign: TextAlign.start,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children:
-                                sizes.map((size) {
-                                  final isSel = selectedSize == size;
-                                  return Padding(
-                                    padding: const EdgeInsets.only(bottom: 5),
-                                    child: ChoiceChip(
-                                      label: Text(size),
-                                      selected: isSel,
-                                      showCheckmark: false,
-                                      onSelected:
-                                          (_) => setState(
-                                            () => selectedSize = size,
-                                          ),
-                                      selectedColor: Colors.white,
-                                      labelStyle: TextStyle(
-                                        fontFamily: 'Work Sans',
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          color:
-                                              isSel
-                                                  ? Colors.black
-                                                  : Colors.black12,
-                                        ),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      Column(
-                        children: [
-                          Text(
-                            'Save',
-                            style: TextStyle(
-                              fontFamily: 'Work Sans',
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          Column(
-                            children: [
-                              GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.black),
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: Colors.white,
-                                  ),
-                                  child: FUI(
-                                    RegularRounded.BOOKMARK,
-                                    height: 20,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 120),
-                              // colori
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    'Colour',
-                                    style: TextStyle(
-                                      fontFamily: 'Work Sans',
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  Column(
-                                    children:
-                                        colors.map((color) {
-                                          final isSel = selectedColor == color;
-                                          return GestureDetector(
-                                            onTap:
-                                                () => setState(
-                                                  () => selectedColor = color,
-                                                ),
-                                            child: Container(
-                                              margin: const EdgeInsets.only(
-                                                bottom: 8,
-                                              ),
-                                              padding: const EdgeInsets.all(4),
-                                              width: 28,
-                                              height: 28,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                color: color,
-                                                shape: BoxShape.rectangle,
-                                                border: Border.all(
-                                                  color:
-                                                      isSel
-                                                          ? Colors.black
-                                                          : Colors
-                                                              .grey
-                                                              .shade300,
-                                                  width: 2,
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }).toList(),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),
           ),
-
-          // Box Scarpe
           Align(
             alignment: Alignment.bottomCenter,
-            child: DragTarget<Product>(
-              onWillAccept: (_) {
-                setState(() => boxOpacity = 1.0);
-                return true;
-              },
-              onLeave: (_) => resetBoxOpacity(),
-              onAccept: (product) {
-                CartService.instance.add(product);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Aggiunto al carrello!')),
-                );
-                setState(() {});
-                resetBoxOpacity();
-              },
-              builder: (context, candidate, rejected) {
-                return AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  opacity: boxOpacity,
-                  child: Image.asset(
-                    'assets/images/shoebox.png',
-                    height: 250,
-                    fit: BoxFit.contain,
-                  ),
-                );
-              },
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 200),
+              opacity: boxOpacity,
+              child: Image.asset(
+                'assets/images/shoebox.png',
+                height: 250,
+                fit: BoxFit.contain,
+              ),
             ),
           ),
 
@@ -398,7 +244,7 @@ class _ProductPageState extends State<ProductPage> {
             bottom: 170,
             child: Column(
               children: [
-                Text(
+                const Text(
                   "Swipe down to add",
                   style: TextStyle(
                     color: Colors.black,
@@ -407,54 +253,49 @@ class _ProductPageState extends State<ProductPage> {
                     fontSize: 16,
                   ),
                 ),
-                SizedBox(height: 10),
-                Center(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: SizedBox(
-                      width: 24,
-                      height: 50,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            child: const FUI(
-                              RegularRounded.ANGLE_SMALL_DOWN,
-                              color: Colors.white24,
-                              height: 24,
-                            ),
+                const SizedBox(height: 10),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: SizedBox(
+                    width: 24,
+                    height: 50,
+                    child: Stack(
+                      children: const [
+                        Positioned(
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          child: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.white24,
                           ),
-                          Positioned(
-                            top: 13,
-                            left: 0,
-                            right: 0,
-                            child: const FUI(
-                              RegularRounded.ANGLE_SMALL_DOWN,
-                              color: Colors.white54,
-                              height: 24,
-                            ),
+                        ),
+                        Positioned(
+                          top: 13,
+                          left: 0,
+                          right: 0,
+                          child: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.white54,
                           ),
-                          Positioned(
-                            top: 26,
-                            left: 0,
-                            right: 0,
-                            child: const FUI(
-                              RegularRounded.ANGLE_SMALL_DOWN,
-                              color: Colors.white,
-                              height: 24,
-                            ),
+                        ),
+                        Positioned(
+                          top: 26,
+                          left: 0,
+                          right: 0,
+                          child: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.white,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -462,14 +303,123 @@ class _ProductPageState extends State<ProductPage> {
             ),
           ),
 
-          // Scarpa
           Positioned(
-            top: 150 + shoeY,
-            left: (MediaQuery.of(context).size.width - 270) / 2,
+            top: originY + shoeOffset.dy,
+            left: originX + shoeOffset.dx,
             child: GestureDetector(
               onPanUpdate: handleDrag,
               onPanEnd: handleRelease,
               child: _shoeWidget(),
+            ),
+          ),
+
+          Positioned(
+            top: 80,
+            left: 20,
+            right: 20,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Size',
+                      style: TextStyle(
+                        fontFamily: 'Work Sans',
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    ...sizes.map((size) {
+                      final isSel = selectedSize == size;
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: ChoiceChip(
+                          label: Text(size),
+                          selected: isSel,
+                          showCheckmark: false,
+                          onSelected:
+                              (_) => setState(() => selectedSize = size),
+                          selectedColor: Colors.white,
+                          labelStyle: TextStyle(
+                            fontFamily: 'Work Sans',
+                            color: isSel ? Colors.black : Colors.black54,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              color: isSel ? Colors.black : Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+
+                const Spacer(),
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Save',
+                      style: TextStyle(
+                        fontFamily: 'Work Sans',
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    InkWell(
+                      onTap: () {},
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black12),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: FUI(
+                          RegularRounded.BOOKMARK,
+                          color: Colors.black,
+                          height: 22,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 130),
+                    const Text(
+                      'Colour',
+                      style: TextStyle(
+                        fontFamily: 'Work Sans',
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    ...colors.map((color) {
+                      final isSel = selectedColor == color;
+                      return GestureDetector(
+                        onTap: () => setState(() => selectedColor = color),
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color:
+                                  isSel ? Colors.black : Colors.grey.shade300,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ],
             ),
           ),
         ],

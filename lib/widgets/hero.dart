@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:simple_shadow/simple_shadow.dart';
 
+class HeroSlide {
+  final String title;
+  final String subtitle;
+  final String buttonText;
+  final String imagePath;
+  final List<Color> gradientColors;
+
+  HeroSlide({
+    required this.title,
+    required this.subtitle,
+    required this.buttonText,
+    required this.imagePath,
+    required this.gradientColors,
+  });
+}
+
 class HeroWidget extends StatefulWidget {
   const HeroWidget({super.key});
 
@@ -9,119 +25,164 @@ class HeroWidget extends StatefulWidget {
 }
 
 class _HeroWidgetState extends State<HeroWidget> {
+  late final PageController _pageController;
+
+  int _currentPage = 0;
+
+  final List<HeroSlide> _slides = [
+    HeroSlide(
+      title: '20% ',
+      subtitle: 'on your first purchase',
+      buttonText: 'Shop Now',
+      imagePath: 'assets/images/green-shoe.png',
+      gradientColors: const [Color(0xFF1D4F4E), Color(0xFFEDC54E)],
+    ),
+    HeroSlide(
+      title: '30% ',
+      subtitle: 'Off selected models',
+      buttonText: 'Discover',
+      imagePath: 'assets/images/airforce.png',
+      gradientColors: const [Color(0xFF3A6EA5), Color(0xFF84B6F4)],
+    ),
+
+    // aggiungi qui altre slide…
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(viewportFraction: 0.92);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Container(
-              width: double.infinity,
-              height: 175,
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF1D4F4E), Color(0xFFEDC54E)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RichText(
-                    text: TextSpan(
-                      text: '20% ',
-                      style: const TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 36,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                        fontStyle: FontStyle.italic,
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: 'Discount',
-                          style: const TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 25,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            fontStyle: FontStyle.italic,
-                          ),
+        SizedBox(
+          height: 200,
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: _slides.length,
+            onPageChanged: (idx) => setState(() => _currentPage = idx),
+            itemBuilder: (context, idx) {
+              final slide = _slides[idx];
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        gradient: LinearGradient(
+                          colors: slide.gradientColors,
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
                         ),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    'on your first purchase',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Work Sans',
-                      fontSize: 16.5,
-                      fontWeight: FontWeight.normal,
-                      // height: -0.1,
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
                       ),
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 25,
-                        vertical: 8,
+                        horizontal: 20,
+                        vertical: 24,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              text: slide.title,
+                              style: const TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: 'Discount\n',
+                                  style: const TextStyle(fontSize: 24),
+                                ),
+                                TextSpan(
+                                  text: slide.subtitle,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Spacer(),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 28,
+                                vertical: 12,
+                              ),
+                            ),
+                            onPressed: () {},
+                            child: Text(
+                              slide.buttonText,
+                              style: const TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    onPressed: () {},
-                    child: const Text(
-                      'Shop Now',
-                      style: TextStyle(
-                        fontFamily: 'Work Sans',
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
+
+                    // Immagine sovrapposta
+                    Positioned(
+                      right: -10,
+                      top: -10,
+                      child: SimpleShadow(
+                        opacity: 0.3,
+                        color: Colors.black,
+                        offset: const Offset(0, 10),
+                        sigma: 20,
+                        child: Image.asset(
+                          slide.imagePath,
+                          height: 180,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              right: 10,
-              top: -7,
-              child: SimpleShadow(
-                opacity: 0.30, // Default: 0.5
-                color: Colors.black, // Default: Black
-                offset: Offset(0, 15.11), // Default: Offset(2, 2)
-                sigma: 30.21,
-                child: Image.asset(
-                  'assets/images/green-shoe.png',
-                  height: 172,
-                  fit: BoxFit.contain,
+                  ],
                 ),
-              ),
-            ),
-          ],
+              );
+            },
+          ),
         ),
-        SizedBox(height: 15),
+
+        const SizedBox(height: 12),
+
+        // Indicatori puntini
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(4, (index) {
-            bool isActive = index == 0; // attivo il primo
-            return Container(
-              margin: EdgeInsets.symmetric(horizontal: 4),
-              width: isActive ? 10 : 6,
-              height: isActive ? 10 : 6,
+          children: List.generate(_slides.length, (idx) {
+            bool active = idx == _currentPage;
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              width: active ? 12 : 6,
+              height: active ? 12 : 6,
               decoration: BoxDecoration(
-                color: isActive ? Colors.black : Colors.black26,
+                color: active ? Colors.black : Colors.black26,
                 shape: BoxShape.circle,
               ),
             );
