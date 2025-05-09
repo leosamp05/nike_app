@@ -1,8 +1,9 @@
 <h1>Nike App</h1>
 
 <h3>Update:</h3>
-**Fixati i bug UI.**
-**Sistemato il funzionamento della pagina prodotto.**
+Fixati i bug UI.
+
+Sistemato il funzionamento della pagina prodotto.
 
 Aggiunte nuove loghice e funzioni:
 - Carosello funzionante;
